@@ -10,76 +10,82 @@ import { ThemeSwitcherBtn } from "./ThemeSwitcherBtn";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Menu } from "lucide-react";
 
-function Navbar() {
-  return (
-    <>
-      <DesktopNavBar />
-      <MobileNavBar />
-    </>
-  );
-}
-
 const items = [
   { label: "Dashboard", link: "/" },
   { label: "Transactions", link: "/transactions" },
   { label: "Manage", link: "/manage" },
 ];
 
-const MobileNavBar = () => {
+interface NavItemProps {
+  href: string;
+  children: React.ReactNode;
+  isActive: boolean;
+}
+
+const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
-    <div className="block border-seperate bg-background md:hidden">
-      <nav className="container flex items-center justify-between px-8">
-        <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetTrigger asChild>
-            <Button variant={"ghost"} size={"icon"}>
-              <Menu />
-            </Button>
-          </SheetTrigger>
-          <SheetContent className="w-[400px] sm:w-[540px]" side="left">
-            <Logo />
-            <div className="flex flex-col gap-1 pt-4">
-              {items.map((item) => (
-                <NavbarItem
-                  key={item.label}
-                  link={item.link}
-                  label={item.label}
-                  clickCallback={() => setIsOpen((prev) => !prev)}
-                />
-              ))}
-            </div>
-          </SheetContent>
-        </Sheet>
-        <div className="flex h-[80px] min-h-[60px] items-center gap-x-4">
-          <LogoMobile />
-        </div>
-        <div className="flex items-center gap-2">
-          <ThemeSwitcherBtn />
-          <UserButton afterSignOutUrl="/sign-in" />
-        </div>
-      </nav>
-    </div>
-  );
-};
+    <div className="sticky top-0 w-full border-b bg-background">
+      <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        {/* Left section - Logo + Menu Button */}
+        <div className="flex items-center">
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="mr-4">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[300px]">
+                <div className="mt-6 flex flex-col gap-4">
+                  <Logo className="hidden md:block" />
+                  <LogoMobile className="block md:hidden" />
+                  {items.map((item) => (
+                    <Link
+                      key={item.label}
+                      href={item.link}
+                      className={cn(
+                        buttonVariants({ variant: "ghost" }),
+                        "justify-start text-lg",
+                        pathname === item.link
+                          ? "bg-muted text-foreground"
+                          : "text-muted-foreground hover:text-foreground"
+                      )}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
 
-const DesktopNavBar = () => {
-  return (
-    <div className="hidden border-separate border-b bg-background md:block">
-      <nav className="container flex items-center justify-between px-8">
-        <div className="flex h-[80px] min-h-[60px] items-center gap-x-4">
-          <Logo />
-          <div className="flex h-full">
+          {/* Responsive Logo */}
+          <div className="flex items-center">
+            <Logo className="hidden md:block" />
+            <LogoMobile className="block md:hidden" />
+          </div>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:ml-8 md:flex md:gap-4">
             {items.map((item) => (
-              <NavbarItem
+              <NavItem
                 key={item.label}
-                link={item.link}
-                label={item.label}
-              />
+                href={item.link}
+                isActive={pathname === item.link}
+              >
+                {item.label}
+              </NavItem>
             ))}
           </div>
         </div>
-        <div className="flex items-center gap-2">
+
+        {/* Right section - Theme + User */}
+        <div className="flex items-center gap-4">
           <ThemeSwitcherBtn />
           <UserButton afterSignOutUrl="/sign-in" />
         </div>
@@ -88,35 +94,20 @@ const DesktopNavBar = () => {
   );
 };
 
-type Props = {
-  link: string;
-  label: string;
-  clickCallback?: () => void;
-};
-
-const NavbarItem = ({ link, label, clickCallback }: Props) => {
-  const pathname = usePathname();
-  const isActive = pathname === link;
-
+const NavItem = ({ href, children, isActive }: NavItemProps) => {
   return (
-    <div className="relative flex items-center">
-      <Link
-        href={link}
-        className={cn(
-          buttonVariants({ variant: "ghost" }),
-          "w-full justify-start text-lg text-muted-foreground hover:text-foreground",
-          isActive && "text-foregorund"
-        )}
-        onClick={() => {
-          if (clickCallback) clickCallback();
-        }}
-      >
-        {label}
-      </Link>
-      {isActive && (
-        <div className="absolute -bottom-[2px] left-1/2 hidden h-[2px] w-[80%] -translate-x-1/2 rounded-xl bg-foreground md:block" />
+    <Link
+      href={href}
+      className={cn(
+        "relative px-3 py-2 text-sm transition-colors hover:text-foreground",
+        isActive ? "text-foreground" : "text-muted-foreground"
       )}
-    </div>
+    >
+      {children}
+      {isActive && (
+        <span className="absolute inset-x-1 -bottom-px h-px bg-foreground" />
+      )}
+    </Link>
   );
 };
 
