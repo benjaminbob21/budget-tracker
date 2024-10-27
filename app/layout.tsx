@@ -19,6 +19,7 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "Bobdget",
   description: "Bobdget Tracker",
+  icons: [{ url: "/favicon.ico" }],
 };
 
 export default function RootLayout({
