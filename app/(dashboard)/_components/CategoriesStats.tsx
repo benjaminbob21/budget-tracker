@@ -75,9 +75,9 @@ function CategoriesCard({ data, type, formatter }: Props1) {
       </CardHeader>
       <div className="flex items-center justify-between gap-2">
         {filteredData.length === 0 && (
-          <div className="flex h-60 w-full flex-col items-center justify-center">
-            No data for the selected period
-            <p className="text-sm text-muted-foreground ">
+          <div className="flex h-60 w-full flex-col items-center justify-center text-center px-4">
+            <span className="mb-2">No data for the selected period</span>
+            <p className="text-sm text-muted-foreground max-w-[200px]">
               Try selecting different period or try adding new{" "}
               {type === "income" ? "incomes" : "expenses"}
             </p>
