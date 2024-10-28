@@ -74,7 +74,7 @@ export default StatsCards;
 type Prop = {
   formatter: Intl.NumberFormat;
   icon: ReactNode;
-  title: String;
+  title: string;
   value: number;
 };
 
