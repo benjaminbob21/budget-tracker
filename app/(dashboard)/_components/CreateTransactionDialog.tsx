@@ -140,6 +140,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                       <Input
                         placeholder="Enter transaction description"
                         className="w-full"
+                        defaultValue={""}
                         {...field}
                       />
                     </FormControl>
@@ -163,6 +164,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                         type="number"
                         placeholder="0.00"
                         className="w-full"
+                        defaultValue={0}
                         {...field}
                       />
                     </FormControl>
@@ -177,7 +179,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                 <FormField
                   control={form.control}
                   name="category"
-                  render={({ field }) => (
+                  render={() => (
                     <FormItem className="flex flex-col">
                       <FormLabel className="text-sm font-medium">
                         Category
